@@ -14,9 +14,11 @@
                 <div class="card-body">
 
                     <!-- Если есть ошибка - то ее отобразить -->
+                    {% if error %}
                     <div class="alert alert-danger" role="alert">
-                        суть ошибки
+                        {{ error }}
                     </div>
+                    {% endif %}
 
                     <!-- Форма для авторизации -->
                     <form action="/login" method="post">

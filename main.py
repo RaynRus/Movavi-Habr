@@ -49,14 +49,63 @@ def register_page():
         return redirect('/')
 
 
-@app.route("/login")
+@app.route("/logout")
+def logout_page():
+    del session["username"]
+    return redirect('/login')
+
+
+@app.route("/login", methods=["POST", "GET"])
 def login_page():
-    return
+    if request.method == "GET":
+        return render_template("login.html")
+    if request.method == "POST":
+        username = request.form.get("username").lower()
+        password = request.form.get("password")
+
+        user = User.get_user_by_username(username)
+        if not user:
+            return render_template("login.html", error="Неправльный логин или пароль.")
+
+        if user.password == password:
+            session["username"] = username
+            return redirect('/')
+        else:
+            return render_template("login.html", error="Неправильный логин или пароль.")
 
 
-@app.route("/profile")
+@app.route("/profile", methods=["GET", "POST"])
 def profile_page():
-    return
+    username = session.get("username")
+
+    user = User.get_user_by_username(username)
+
+    if not username:
+        return redirect("/login")
+
+    if request.method == "GET":
+        posts = Post.get_by_author(user.id)
+        return render_template("profile.html", user=user, posts=posts)
+    if request.method == "POST":
+        title = request.form.get("title")
+        text = request.form.get("text")
+
+        Post.create(title, text, user.id)
+        return redirect('/profile')
 
 
-app.run(host="0.0.0.0", port=8080)
+@app.route("/profile/<int:id>")
+def profile2_page(id: int):
+    username = session.get("username")
+
+    user = User.get_user_by_username(username)
+
+    if not username:
+        return redirect("/login")
+    author = User.get_user_by_id(id)
+
+    posts = Post.get_by_author(id)
+    return render_template("postCreatorProfile.html", user=user, author=author, posts=posts)
+
+
+app.run(host="0.0.0.0", port=8080, debug=True)

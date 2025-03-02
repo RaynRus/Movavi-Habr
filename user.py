@@ -35,6 +35,19 @@ class User:
         return User(*data)
 
     @staticmethod
+    def get_user_by_id(id):
+        SQL = """
+            SELECT * FROM user
+            WHERE id = ?
+        """
+        con = sqlite3.connect(db_name)
+        q = con.execute(SQL, [id])
+        data = q.fetchone()
+        if not data:
+            return None
+        return User(*data)
+
+    @staticmethod
     def create(username, password):
         SQL = """
             INSERT INTO user(username, password)

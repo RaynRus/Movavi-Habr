@@ -1,5 +1,5 @@
 <!-- Подключение базового шаблона -->
-
+{% extends 'base.html' %}
 
 {% block title %}Профиль пользователя{% endblock %}
 
@@ -11,8 +11,8 @@
                 Профиль пользователя
             </div>
             <div class="card-body">
-                <h5 class="card-title">Имя пользователя: имя</h5>
-                <p class="card-text">Количество публикаций: кол-во</p>
+                <h5 class="card-title">Имя пользователя: {{ user.username }}</h5>
+                <p class="card-text">Количество публикаций: {{ posts|length }}</p>
             </div>
         </div>
     </div>
@@ -52,16 +52,17 @@
 
         <!-- Список карточек публикаций -->
 
+        {% for post in posts %}
         <!-- Карточка одоного поста пользователя -->
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">заголовок поста</h5>
-                <p class="card-text">текст поста</p>
-                <p class="card-text text-secondary"> Дата публикации: дата</p>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.text }}</p>
+                    <p class="card-text text-secondary"> Дата публикации: {{ post.at_publish }}</p>
+                </div>
             </div>
-        </div>
         <!-- таких карточек много... -->
-
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

@@ -19,16 +19,21 @@ def create_post_table():
 
 
 class Post:
-    def __init__(self, id, title, text, at_publish, author_id):
+    def __init__(self, id, title, text, at_publish, author_id, username=None):
         self.id = id
         self.title = title
         self.text = text
         self.at_publish = at_publish
         self.author_id = author_id
+        self.author_username = username
 
     @staticmethod
     def get_all():
-        SQL = "SELECT * FROM post"
+        SQL = """
+               SELECT post.*, user.username FROM post
+               LEFT JOIN user ON user.id = post.author_id
+        """
+
         con = sqlite3.connect(db_name)
         q = con.execute(SQL)
         data = q.fetchall()
